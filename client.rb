@@ -1,3 +1,6 @@
+require 'rest-client'
+require 'json'
+
 class AstridClient
   attr_reader :app_id, :api_secret, :api_url, :token
 
@@ -14,6 +17,7 @@ class AstridClient
       "email" => email, "secret" => password, "provider" =>  "password"
     )
     response = do_request(:user_signin, params)
+    raise response['message'] if response['status'].eql? "error"
     @token = response['token']
   end
 
@@ -27,7 +31,7 @@ class AstridClient
     JSON.parse(response)
   end
 
-  [:time, :list_list].each do |method_name|
+  [:time, :list_list, :task_list, :task_save].each do |method_name|
     define_method method_name do |params = {}|
       do_request method_name, params
     end
@@ -42,9 +46,9 @@ class AstridClient
 
   def sorted_params(params)
     params.sort do |a,b|
-      keys_comparison = a[0] <=> b[0]
+      keys_comparison = a[0].to_s <=> b[0].to_s
       if keys_comparison == 0
-        a[1] <=> b[1]
+        a[1].to_s <=> b[1].to_s
       else
         keys_comparison
       end

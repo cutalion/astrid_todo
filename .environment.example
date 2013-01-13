@@ -1,0 +1,5 @@
+export ASTRID_API_SECRET=xxxxxxxxxxxxx
+export ASTRID_APP_ID=xxxxxxxxxxxxx
+
+export ASTRID_USER=xxxxxxx@xxxxxx.xxx
+export ASTRID_PASSWORD=xxxxxxxxxxx

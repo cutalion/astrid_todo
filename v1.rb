@@ -1,5 +1,3 @@
-require 'rest-client'
-require 'json'
 require './client'
 
 API_SECRET = "xxxxxxxxxxxxx"
@@ -12,6 +10,6 @@ astrid = AstridClient.new(APP_ID, API_SECRET)
 astrid.user_signin(USER, PASSWORD)
 
 puts "Lists:"
-lists = astrid.list_list['list'].each do |list|
-  puts "* #{list['name']} (#{list['tasks']})"
+lists = astrid.task_list['list'].each do |task|
+  puts "* #{task['title']}"
 end
