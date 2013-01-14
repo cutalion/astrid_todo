@@ -1,17 +1,8 @@
 #!/usr/bin/env ruby
 require 'curses'
 require File.expand_path('../client', __FILE__)
+require File.expand_path('../config', __FILE__)
 
-
-def config(key)
-  ENV.fetch(key) { raise "Set the #{key} env variable" }
-end
-
-API_SECRET = config('ASTRID_API_SECRET')
-APP_ID     = config('ASTRID_APP_ID')
-
-USER       = config('ASTRID_USER')
-PASSWORD   = config('ASTRID_PASSWORD')
 
 def init_screen
   Curses.noecho # do not show typed keys

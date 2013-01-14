@@ -1,10 +1,5 @@
 require './client'
-
-API_SECRET = "xxxxxxxxxxxxx"
-APP_ID     = "xxxxxxxxxxxxx"
-
-USER    = "xxxxxxx@xxxxxxx.xxx"
-PASSWORD = "xxxxxxxxx"
+require './config'
 
 astrid = AstridClient.new(APP_ID, API_SECRET)
 astrid.user_signin(USER, PASSWORD)
