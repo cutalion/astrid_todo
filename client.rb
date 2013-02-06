@@ -2,7 +2,8 @@ require 'rest-client'
 require 'json'
 
 class AstridClient
-  attr_reader :app_id, :api_secret, :api_url, :token
+  attr_reader :app_id, :api_secret, :api_url
+  attr_accessor :token
 
   def initialize(app_id, api_secret)
     @app_id     = app_id
@@ -17,18 +18,20 @@ class AstridClient
       "email" => email, "secret" => password, "provider" =>  "password"
     )
     response = do_request(:user_signin, params)
-    raise response['message'] if response['status'].eql? "error"
     @token = response['token']
   end
 
   def do_request(method, params = {})
     params = params.merge("token" => token) # token from `user_signin`
     params = default_params.merge(params)
+    params = sort_params(params)
 
-    signature = signature(method, sorted_params(params), api_secret)
+    signature = signature(method, params, api_secret)
 
     response = RestClient.post "#{api_url}#{method}", params.merge(sig: signature)
-    JSON.parse(response)
+    response = JSON.parse(response)
+    raise response['message'] if response['status'].eql? "error"
+    response
   end
 
   [:time, :list_list, :task_list, :task_save].each do |method_name|
@@ -44,19 +47,46 @@ class AstridClient
       "time"   => Time.now.to_i.to_s }
   end
 
-  def sorted_params(params)
-    params.sort do |a,b|
-      keys_comparison = a[0].to_s <=> b[0].to_s
-      if keys_comparison == 0
-        a[1].to_s <=> b[1].to_s
-      else
-        keys_comparison
+  def to_query_key_value(hash)
+    params = []
+    hash.each_with_index do |(key, value), i|
+      case value
+        when Array
+          value.map do |v|
+            params << ["#{key}[]", v]
+          end
+        when Hash
+          raise "not implemented"
+        else
+          params << [key, value]
       end
     end
+    params
+  end
+
+  def sort_params(params)
+    # sort by keys
+    # sort inner arrays
+    params = params.map do |k, v|
+      v.sort! if v.is_a? Array
+      [k,v]
+    end.sort{|a,b| a[0].to_s <=> b[0].to_s}
+
+    Hash[params]
   end
 
   def signature(method, params, api_secret)
-    str = method.to_s + sorted_params(params).flatten.join + api_secret.to_s
-    Digest::MD5.hexdigest(str)
+    str = method.to_s + to_query_key_value(params).flatten.join + api_secret.to_s
+    Digest::MD5.hexdigest str
+  end
+
+  def logger
+    @logger ||= File.new('./log', 'a+')
+  end
+
+  def log(message)
+    logger << "\n#{message.inspect}"
+    logger.flush
+    message
   end
 end

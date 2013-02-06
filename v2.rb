@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+# enconding: utf-8
 require 'curses'
 require File.expand_path('../client', __FILE__)
 require File.expand_path('../config', __FILE__)
@@ -71,7 +71,11 @@ class Astrid
 
   def create(title)
     return if title.to_s.strip.empty?
-    client.task_save({'title' => title})
+    tags = title.scan(/\B#(\p{Word}+)/)
+    if tags.any?
+      title.gsub!(/\s?\B#\p{Word}+/, '')
+    end
+    client.task_save({'title' => title, 'tags' => tags.flatten})
     reload
   end
 
@@ -112,15 +116,15 @@ init_screen do
 
 
     case Curses.getch
-    when Curses::Key::UP then todo.prev
-    when Curses::Key::DOWN then todo.next
-    when ?e then todo.update( todo.current_task['id'],
-                              input("Edit #{todo.current_task['title']}:") )
-    when ?a,?n then todo.create( input("New task:") )
-    when ?d then todo.delete( todo.current_task['id'] )
-    when ?c then todo.complete( todo.current_task['id'] )
-    when ?q then break
-    when ?r then todo.reload
+      when Curses::Key::UP then todo.prev
+      when Curses::Key::DOWN then todo.next
+      when ?e then todo.update( todo.current_task['id'],
+                                input("Edit #{todo.current_task['title']}:") )
+      when ?a then todo.create( input("New task:") )
+      when ?d then todo.delete( todo.current_task['id'] )
+      when ?c then todo.complete( todo.current_task['id'] )
+      when ?q then break
+      when ?r then todo.reload
     end
   end
 end

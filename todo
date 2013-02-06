@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require File.expand_path('../client', __FILE__)
+require File.expand_path('../config', __FILE__)
+require File.expand_path('../tasks', __FILE__)
+require File.expand_path('../task', __FILE__)
+
+
+client = AstridClient.new(APP_ID, API_SECRET)
+TOKEN_FILE = './.astrid_token'
+
+unless File.exists?(TOKEN_FILE)
+  client.user_signin(USER, PASSWORD)
+  File.open(TOKEN_FILE, 'w').write(client.token)
+else
+  client.token = File.open(TOKEN_FILE).read
+end
+
+
+tasks = Tasks.new(client)
+command = ARGV.shift || 'list'
+
+case command
+when 'delete', 'rm'
+
+  id = ARGV.shift
+  if tasks.delete id
+    puts "Task deleted"
+  end
+
+when 'edit'
+
+  id    = ARGV.shift.dup
+  title = ARGV.shift.dup
+  task  = Task.new(id: id, title: title)
+
+  if tasks.update task
+    puts "Task updated"
+  end
+
+when 'add', 'new'
+
+  title = ARGV.shift.dup
+  task = Task.new(title: title)
+
+  if tasks.add task
+    puts "Task created"
+  end
+
+when 'list'
+
+  puts "All tasks:"
+  tasks.all.each_with_index do |task, i|
+    printf "%20s - %s\n", task.id, task.title
+  end
+
+else
+  puts "Unknown command #{command}"
+  exit 1
+end
