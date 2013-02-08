@@ -58,10 +58,22 @@ when 'all', 'tasks'
     printf "%20s - %s\n", task.id, task.title
   end
 
-when 'lists'
+when 'lists', 'tags'
 
   lists.all.each_with_index do |list, i|
     printf "%2d - %s (%d)\n", i+1, list.name, list.tasks_count
+  end
+
+when 'list', 'tag'
+
+  list_name = ARGV.shift.to_s.strip
+  list = lists.all.find { |l| l.name.downcase == list_name }
+  if list
+    tasks.where(tag_id: list.id).all.each do |task|
+      printf "%20s - %s\n", task.id, task.title
+    end
+  else
+    puts "No such list"
   end
 
 else
