@@ -3,8 +3,10 @@
 require 'optparse'
 require File.expand_path('../client', __FILE__)
 require File.expand_path('../config', __FILE__)
-require File.expand_path('../tasks', __FILE__)
-require File.expand_path('../task', __FILE__)
+require File.expand_path('../tasks',  __FILE__)
+require File.expand_path('../task',   __FILE__)
+require File.expand_path('../lists',  __FILE__)
+require File.expand_path('../list',   __FILE__)
 
 
 client = AstridClient.new(APP_ID, API_SECRET)
@@ -19,7 +21,9 @@ end
 
 
 tasks = Tasks.new(client)
-command = ARGV.shift || 'list'
+lists = Lists.new(client)
+
+command = ARGV.shift || 'all'
 
 case command
 when 'delete', 'rm'
@@ -48,11 +52,16 @@ when 'add', 'new'
     puts "Task created"
   end
 
-when 'list'
+when 'all', 'tasks'
 
-  puts "All tasks:"
   tasks.all.each_with_index do |task, i|
     printf "%20s - %s\n", task.id, task.title
+  end
+
+when 'lists'
+
+  lists.all.each_with_index do |list, i|
+    printf "%2d - %s (%d)\n", i+1, list.name, list.tasks_count
   end
 
 else
