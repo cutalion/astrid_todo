@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require File.expand_path('../client', __FILE__)
-require File.expand_path('../config', __FILE__)
-require File.expand_path('../tasks',  __FILE__)
-require File.expand_path('../task',   __FILE__)
-require File.expand_path('../lists',  __FILE__)
-require File.expand_path('../list',   __FILE__)
+require File.expand_path('../../config', __FILE__)
+require File.expand_path('../../lib/client', __FILE__)
+require File.expand_path('../../lib/tasks',  __FILE__)
+require File.expand_path('../../lib/task',   __FILE__)
+require File.expand_path('../../lib/lists',  __FILE__)
+require File.expand_path('../../lib/list',   __FILE__)
 
 
 client = AstridClient.new(APP_ID, API_SECRET)

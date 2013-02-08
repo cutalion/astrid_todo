@@ -79,14 +79,4 @@ class AstridClient
     str = method.to_s + to_query_key_value(params).flatten.join + api_secret.to_s
     Digest::MD5.hexdigest str
   end
-
-  def logger
-    @logger ||= File.new('./log', 'a+')
-  end
-
-  def log(message)
-    logger << "\n#{message.inspect}"
-    logger.flush
-    message
-  end
 end

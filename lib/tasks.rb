@@ -4,6 +4,7 @@ class Tasks
 
   def initialize(client)
     @client = client
+    @params = {}
   end
 
   def where(conditions)
