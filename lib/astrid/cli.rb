@@ -49,6 +49,10 @@ module Astrid
       info.puts *args
     end
 
+    def progress(num, symbol='.')
+      info.printf "\r" + symbol * num
+    end
+
     def display(*args)
       output.puts *args
     end

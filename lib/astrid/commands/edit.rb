@@ -9,7 +9,7 @@ module Astrid
         task  = Task.new(id: id, title: title)
 
         if app.tasks.update task
-          error.puts "Task updated"
+          puts "Task updated"
         end
       end
     end
