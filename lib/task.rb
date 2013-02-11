@@ -2,6 +2,7 @@ class Task
   attr_accessor :id, :title, :tags
 
   def initialize(attributes = {})
+    @tags = []
     attributes.each do |key, value|
       if self.respond_to? "#{key}="
         send "#{key}=", value
@@ -14,7 +15,8 @@ class Task
 
     if tags.any?
       title.gsub!(/\s?\B#\p{Word}+/, '')
-      @tags = tags.flatten
+      @tags += tags.flatten
+      @tags.uniq!
     end
 
     @title = title

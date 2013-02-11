@@ -28,10 +28,14 @@ command = ARGV.shift || 'all'
 case command
 when 'delete', 'rm'
 
-  id = ARGV.shift
-  if tasks.delete id
-    puts "Task deleted"
+  puts "Removing #{ARGV.size} tasks"
+
+  ARGV.each_with_index do |id, i|
+    print "\r" +  "." * (i+1)
+    tasks.delete id
   end
+  puts
+  puts "#{ARGV.size} tasks removed"
 
 when 'edit'
 
@@ -45,12 +49,16 @@ when 'edit'
 
 when 'add', 'new'
 
-  title = ARGV.shift.dup
-  task = Task.new(title: title)
+  tasks_list = ARGV.empty? ? ARGF.lines.to_a : ARGV
 
-  if tasks.add task
-    puts "Task created"
+  puts "Creating #{tasks_list.size} tasks"
+
+  tasks_list.each do |title|
+    task = Task.new(title: title.strip)
+    tasks.add task
   end
+
+  puts "#{tasks_list.size} tasks created"
 
 when 'all', 'tasks'
 
