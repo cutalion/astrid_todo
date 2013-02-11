@@ -28,14 +28,14 @@ command = ARGV.shift || 'all'
 case command
 when 'delete', 'rm'
 
-  puts "Removing #{ARGV.size} tasks"
+  $stderr.puts "Removing #{ARGV.size} tasks"
 
   ARGV.each_with_index do |id, i|
-    print "\r" +  "." * (i+1)
+    $stderr.print "\r" +  "." * (i+1)
     tasks.delete id
   end
-  puts
-  puts "#{ARGV.size} tasks removed"
+  $stderr.puts
+  $stderr.puts "#{ARGV.size} tasks removed"
 
 when 'edit'
 
@@ -44,21 +44,21 @@ when 'edit'
   task  = Task.new(id: id, title: title)
 
   if tasks.update task
-    puts "Task updated"
+    $stderr.puts "Task updated"
   end
 
 when 'add', 'new'
 
   tasks_list = ARGV.empty? ? ARGF.lines.to_a : ARGV
 
-  puts "Creating #{tasks_list.size} tasks"
+  $stderr.puts "Creating #{tasks_list.size} tasks"
 
   tasks_list.each do |title|
     task = Task.new(title: title.strip)
     tasks.add task
   end
 
-  puts "#{tasks_list.size} tasks created"
+  $stderr.puts "#{tasks_list.size} tasks created"
 
 when 'all', 'tasks'
 
@@ -81,10 +81,10 @@ when 'list', 'tag'
       printf "%20s - %s\n", task.id, task.title
     end
   else
-    puts "No such list"
+    $stderr.puts "No such list"
   end
 
 else
-  puts "Unknown command #{command}"
+  $stderr.puts "Unknown command #{command}"
   exit 1
 end
