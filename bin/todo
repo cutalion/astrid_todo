@@ -1,12 +1,9 @@
 #!/usr/bin/env ruby
 
+$:.unshift File.dirname(__FILE__)
+
 require 'optparse'
-require File.expand_path('../../config',     __FILE__)
-require File.expand_path('../../lib/client', __FILE__)
-require File.expand_path('../../lib/tasks',  __FILE__)
-require File.expand_path('../../lib/task',   __FILE__)
-require File.expand_path('../../lib/lists',  __FILE__)
-require File.expand_path('../../lib/list',   __FILE__)
-require File.expand_path('../../lib/cli',    __FILE__)
+require './config'
+require './lib/astrid'
 
 Astrid::CLI.new.run
