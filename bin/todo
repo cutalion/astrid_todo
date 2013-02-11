@@ -1,90 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require File.expand_path('../../config', __FILE__)
+require File.expand_path('../../config',     __FILE__)
 require File.expand_path('../../lib/client', __FILE__)
 require File.expand_path('../../lib/tasks',  __FILE__)
 require File.expand_path('../../lib/task',   __FILE__)
 require File.expand_path('../../lib/lists',  __FILE__)
 require File.expand_path('../../lib/list',   __FILE__)
+require File.expand_path('../../lib/cli',    __FILE__)
 
-
-client = AstridClient.new(APP_ID, API_SECRET)
-TOKEN_FILE = './.astrid_token'
-
-unless File.exists?(TOKEN_FILE)
-  client.user_signin(USER, PASSWORD)
-  File.open(TOKEN_FILE, 'w').write(client.token)
-else
-  client.token = File.open(TOKEN_FILE).read
-end
-
-
-tasks = Tasks.new(client)
-lists = Lists.new(client)
-
-command = ARGV.shift || 'all'
-
-case command
-when 'delete', 'rm'
-
-  $stderr.puts "Removing #{ARGV.size} tasks"
-
-  ARGV.each_with_index do |id, i|
-    $stderr.print "\r" +  "." * (i+1)
-    tasks.delete id
-  end
-  $stderr.puts
-  $stderr.puts "#{ARGV.size} tasks removed"
-
-when 'edit'
-
-  id    = ARGV.shift.dup
-  title = ARGV.shift.dup
-  task  = Task.new(id: id, title: title)
-
-  if tasks.update task
-    $stderr.puts "Task updated"
-  end
-
-when 'add', 'new'
-
-  tasks_list = ARGV.empty? ? ARGF.lines.to_a : ARGV
-
-  $stderr.puts "Creating #{tasks_list.size} tasks"
-
-  tasks_list.each do |title|
-    task = Task.new(title: title.strip)
-    tasks.add task
-  end
-
-  $stderr.puts "#{tasks_list.size} tasks created"
-
-when 'all', 'tasks'
-
-  tasks.all.each_with_index do |task, i|
-    printf "%20s - %s\n", task.id, task.title
-  end
-
-when 'lists', 'tags'
-
-  lists.all.each_with_index do |list, i|
-    printf "%2d - %s (%d)\n", i+1, list.name, list.tasks_count
-  end
-
-when 'list', 'tag'
-
-  list_name = ARGV.shift.to_s.strip
-  list = lists.all.find { |l| l.name.downcase == list_name }
-  if list
-    tasks.where(tag_id: list.id).all.each do |task|
-      printf "%20s - %s\n", task.id, task.title
-    end
-  else
-    $stderr.puts "No such list"
-  end
-
-else
-  $stderr.puts "Unknown command #{command}"
-  exit 1
-end
+Astrid::CLI.new.run
