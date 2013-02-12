@@ -1,4 +1,4 @@
-require './lib/astrid/commands/base'
+require 'lib/astrid/commands/base'
 
 module Astrid
   module Commands

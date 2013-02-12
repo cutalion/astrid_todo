@@ -1,1 +1,1 @@
-require './lib/astrid/cli'
+require 'lib/astrid/cli'

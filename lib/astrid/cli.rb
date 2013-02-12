@@ -1,9 +1,9 @@
-require './lib/astrid/client'
-require './lib/astrid/tasks'
-require './lib/astrid/task'
-require './lib/astrid/lists'
-require './lib/astrid/list'
-require './lib/astrid/commands'
+require 'lib/astrid/client'
+require 'lib/astrid/tasks'
+require 'lib/astrid/task'
+require 'lib/astrid/lists'
+require 'lib/astrid/list'
+require 'lib/astrid/commands'
 
 module Astrid
   class CLI

@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.dirname(__FILE__)
+$:.unshift File.expand_path(File.dirname(File.dirname(__FILE__)))
 
 require 'optparse'
-require './config'
-require './lib/astrid'
+require 'config'
+require 'lib/astrid'
 
 Astrid::CLI.new.run
