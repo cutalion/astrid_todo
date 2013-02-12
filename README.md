@@ -36,6 +36,23 @@ Console client for [Astrid](http://www.astrid.com/) todo service
 * `./bin/todo tag <name>`
 * `./bin/todo list <name>`
 
+
+## Configuration
+
+Add environment variables:
+
+    export ASTRID_USER=xxxxxxx@xxxxxx.xxx
+    export ASTRID_PASSWORD=xxxxxxxxxxx
+
+    export ASTRID_API_SECRET=xxxxxxxxxxxxx
+    export ASTRID_APP_ID=xxxxxxxxxxxxx
+
+`ASTRID_USER`     - your login/email on astrid.com
+`ASTRID_PASSWORD` - your password
+
+`ASTRID_APP_ID` and `ASTRID_API_SECRET` - application id and API secret, which
+you can easily get on http://astrid.com/api_keys
+
 ## Roadmap
 
 * add 'complete' command
